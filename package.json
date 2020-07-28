@@ -1,0 +1,22 @@
+{
+  "name": "excel_gencode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./bin/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nalanrola/excel_genCode.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nalanrola/excel_genCode/issues"
+  },
+  "homepage": "https://github.com/nalanrola/excel_genCode#readme",
+  "dependencies": {
+    "@types/xlsx": "^0.0.36"
+  }
+}
