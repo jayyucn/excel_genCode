@@ -7,7 +7,6 @@
     "tsc": "tsc",
     "run": "node ./bin/test.js"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nalanrola/excel_genCode.git"
@@ -19,10 +18,11 @@
   },
   "homepage": "https://github.com/nalanrola/excel_genCode#readme",
   "dependencies": {
-    "commander": "^6.0.0",
     "@types/fs-extra": "^9.0.1",
-    "fs-extra": "^9.0.1",
     "@types/node": "^14.0.24",
-    "@types/xlsx": "^0.0.36"
+    "@types/xlsx": "^0.0.36",
+    "commander": "^6.0.0",
+    "fs-extra": "^9.0.1",
+    "node-cmd": "^3.0.0"
   }
 }

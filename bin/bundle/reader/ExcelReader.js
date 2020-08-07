@@ -14,9 +14,13 @@ class ExcelReader {
             if (sheetName.startsWith('_'))
                 continue;
             let workSheet = workbook.Sheets[sheetName];
-            let ref = workSheet["!ref"].split(":");
+            let range = this.handleRef(workSheet["!ref"]);
+            for (let row = range.firstRow; row <= range.lastColumn; row++) {
+                if (row == 1) {
+                }
+            }
             let str = JSON.stringify(workSheet);
-            console.log('=================', workSheet['!ref']);// Object.keys(workSheet));
+            console.log('=================', str);
             Path_1.default.WriteJson('./bin/test.json', str);
         }
         return [];
@@ -34,11 +38,45 @@ class ExcelReader {
         Logger_1.default.Error(`${__dirname}:: ${__filename}: Read ${filePath} failed!!!`);
         return null;
     }
-    isSheetNameCorrect(sheetName) {
+    static isSheetNameCorrect(sheetName) {
         let reg = /([A-Z][a-z]+)+/g;
         if (sheetName.match(reg))
             return true;
         return false;
+    }
+    getCellValue(row, column) {
+    }
+    static handleRef(ref) {
+        let list = ref.replace(":", "").split(/([0 - 9] +) /);
+        let range = {};
+        range.firstColunm = this._convertCode2Num(list[0]);
+        range.firstRow = Number(list[1]);
+        range.lastColumn = this._convertCode2Num(list[2]);
+        range.lastRow = Number(list[3]);
+        return range;
+    }
+    static _convertCode2Num(str) {
+        let n = 0;
+        var s = str.match(/./g); //求出字符数组
+        var j = 0;
+        for (var i = str.length - 1, j = 1; i >= 0; i--, j *= 26) {
+            var c = s[i].toUpperCase();
+            if (c < 'A' || c > 'Z')
+                return 0;
+            n += (c.charCodeAt(0) - 64) * j;
+        }
+        return n;
+    }
+    static _convertNum2Code(num) {
+        var str = "";
+        while (num > 0) {
+            var m = num % 26;
+            if (m == 0)
+                m = 26;
+            str = String.fromCharCode(m + 64) + str;
+            num = (num - m) / 26;
+        }
+        return str;
     }
 }
 exports.default = ExcelReader;

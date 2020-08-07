@@ -9,8 +9,13 @@ class Sheet {
     static Create(workSheet, sheetName) {
         let sheet = new Sheet();
         sheet.sheetName = sheetName;
+        workSheet["!ref"];
         Object.assign(sheet, workSheet);
+        sheet._init();
         return sheet;
+    }
+    _init() {
+        let ref = this['!ref'];
     }
 }
 exports.default = Sheet;

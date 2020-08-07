@@ -14,12 +14,11 @@ export default class ExcelReader {
                 continue;
             let workSheet = workbook.Sheets[sheetName];
             let range = this.handleRef(workSheet["!ref"]);
-            for(let row = range.firstRow; row <= range.lastColumn, row++) {
+            for(let row = range.firstRow; row <= range.lastColumn; row++) {
                 if(row == 1){
-                    OS.platform()
                 }
             }
-            OS
+            
             let str  = JSON.stringify(workSheet)
             console.log('=================',str);
             Path.WriteJson('./bin/test.json', str)
