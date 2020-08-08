@@ -57,5 +57,3 @@ export default class Logger
         return Logger.logLevel;
     }
 }
-
-export
