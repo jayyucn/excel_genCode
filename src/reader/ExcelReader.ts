@@ -54,7 +54,6 @@ export default class ExcelReader {
 
     }
 
-    private 
 
     private static handleRef(ref: string): ContentRange {
         let list = ref.replace(":","").split(/([0 - 9] +) /);

@@ -5,7 +5,8 @@
   "main": "./bin/test.js",
   "scripts": {
     "tsc": "tsc",
-    "run": "node ./bin/test.js"
+    "run": "node ./bin/test.js",
+    "runTest": "node ./test.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "@types/xlsx": "^0.0.36",
     "commander": "^6.0.0",
     "fs-extra": "^9.0.1",
-    "node-cmd": "^3.0.0"
+    "node-cmd": "^3.0.0",
+    "read-excel-file": "^4.0.7"
   }
 }

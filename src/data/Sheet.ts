@@ -1,4 +1,4 @@
-import XLSX from 'xlsx'
+import XLSX from "xlsx"
 export default class Sheet implements XLSX.WorkSheet
 {
     id: number = 0;

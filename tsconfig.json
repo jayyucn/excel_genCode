@@ -13,8 +13,9 @@
     "declaration": true,                   /* Generates corresponding '.d.ts' file. */
     // "declarationMap": true,                /* Generates a sourcemap for each corresponding '.d.ts' file. */
     // "sourceMap": true,                     /* Generates corresponding '.map' file. */
-    "outFile": "./bin/libs/utils.js",                       /* Concatenate and emit output to single file. */
-    // "outDir": "./bin/bundle",                        /* Redirect output structure to the directory. */
+    // "outFile": "./bin/libs/utils.js", /* Concatenate and emit output to single file. */
+    // "outFile": "./bin/bundle.js", /* Concatenate and emit output to single file. */
+    "outDir": "./bin/",                        /* Redirect output structure to the directory. */
     // "rootDir": "./",                       /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "composite": true,                     /* Enable project compilation */
     // "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
@@ -66,5 +67,5 @@
     // "skipLibCheck": true,                     /* Skip type checking of declaration files. */
     // "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": ["src/utils/**/*.ts"]
+  // "include": ["src/utils/**/*.ts"]
 }
