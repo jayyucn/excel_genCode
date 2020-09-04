@@ -1,20 +1,17 @@
 import XLSX from "xlsx"
-export default class Sheet implements XLSX.WorkSheet
+import Row from "./Row";
+export default class Sheet
 {
-    id: number = 0;
     sheetName: string = "";
-    static Create(workSheet: XLSX.WorkSheet,sheetName: string) {
-        let sheet = new Sheet();
-        sheet.sheetName = sheetName;
-        workSheet["!ref"]
-        Object.assign(sheet, workSheet);
-        sheet._init()
-        return sheet;
+    rowCount: number = 0;
+    columnCount: number = 0;
+    
+    rows: Row[];
+    
+    constructor(workSheet: XLSX.WorkSheet) {
+        this.sheetName = workSheet['sheetName'];
     }
-
-    private _init() {
-        let ref = this['!ref'];
-    }
+    
 
 }
 
@@ -32,4 +29,9 @@ export class ExportSheet extends Sheet {
         Object.assign(sheet,workSheet);
         return sheet;
     }
+
+
+
+    
 }
+

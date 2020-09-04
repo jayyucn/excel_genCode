@@ -1,31 +1,42 @@
-import XLSX from 'xlsx'
-import FS from 'fs'
-import Sheet, {ExportSheet} from '../data/Sheet';
+import * as XLSX from 'xlsx';
+import Sheet,{ExportSheet} from '../data/Sheet';
 import Logger from '../Logger';
 import Path from '../Path';
-import * as OS from 'os'
+import SheetReader from './SheetReader';
+import WorkBook = XLSX.WorkBook;
+import WorkSheet = XLSX.WorkSheet;
 
 export default class ExcelReader {
 
-    static readExcel(filePath: string): Sheet[] {
+    public static workSheetMap: Map<string, WorkSheet> = new Map<string, WorkSheet>();
+
+    public static readExcel(filePath: string): Sheet[] {
         let workbook = XLSX.readFile(filePath);
         for(let sheetName of workbook.SheetNames) {
             if(sheetName.startsWith('_'))
                 continue;
             let workSheet = workbook.Sheets[sheetName];
-            let range = this.handleRef(workSheet["!ref"]);
-            for(let row = range.firstRow; row <= range.lastColumn; row++) {
-                if(row == 1){
-                }
-            }
+            Object.defineProperty(workSheet,'sheetName',{
+                value: sheetName,
+                writable: false
+            })
+            SheetReader.Read(workSheet);
+            // this.workSheetMap.set(sheetName, workSheet);
+            // workSheet
+            // let range = this.handleRef(workSheet["!ref"]);
+            // for(let row = range.firstRow; row <= range.lastColumn; row++) {
+            //     if(row == 1){
+            //     }
+            // }
             
-            let str  = JSON.stringify(workSheet)
-            console.log('=================',str);
-            Path.WriteJson('./bin/test.json', str)
+            // let str = JSON.stringify(workSheet)
+            // console.log('=================',str);
+            // Path.WriteJson('./bin/test.json', str)
             
         }
         return [];
     }
+
 
     static readExportExcel(filePath: string) {
         let workbook = XLSX.readFile(filePath);
@@ -56,7 +67,7 @@ export default class ExcelReader {
 
 
     private static handleRef(ref: string): ContentRange {
-        let list = ref.replace(":","").split(/([0 - 9] +) /);
+        let list = ref.replace(":","").split(/([0-9]+)/);
         let range = <ContentRange>{};
         range.firstColunm = this._convertCode2Num(list[0]);
         range.firstRow = Number(list[1]);
