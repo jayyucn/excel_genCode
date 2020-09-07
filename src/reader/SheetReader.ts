@@ -1,9 +1,19 @@
 import * as XLSX from 'xlsx';
 import Sheet from '../data/Sheet';
-import Row from '../data/Row';
 import WorkSheet = XLSX.WorkSheet;
+import Logger from '../Logger';
+
+enum EnumSheetHead {
+    TYPE    = 1,
+    DES     = 2,
+    FIELD   = 3,
+    USER    = 4
+}
 
 export default class SheetReader {
+    private json_str_type = ["string"];
+    private json_int_type = ["int32","int64","uint32","uint64"];
+    private json_num_type = ["float64","float32","int32","int64","uint32","uint64"];
 
     /** 字段类型 */
     private static typeMap: Map<number,any> = new Map<number,any>();
@@ -20,10 +30,18 @@ export default class SheetReader {
         st.columnCount = range.lastColumn;
         //读表头
         for(let column = 1; column <= range.lastColumn; column++) {
-            let rowType = this._convertNum2Code(Row.RowType)+column;
-            sheet[rowType]
-
+            let columnChar = this._convertNum2Code(column);
+            let rowType = columnChar + EnumSheetHead.TYPE;
+            if(!sheet[rowType]) {
+                Logger.Error(`${sheet.sheetName}表 ${EnumSheetHead.TYPE}行，${columnChar}列，类型字段错误`);
+            }
+            this.typeMap.set(column, sheet[rowType].v);
+            let rowDes = columnChar + EnumSheetHead.DES;
+            this.desMap.set(column,sheet[rowDes].v);
+            let filed = columnChar + EnumSheetHead.FIELD;
+            this.fieldMap.set(column,sheet[filed].v);
         }
+        console.log("-------aaa-------",this.typeMap.values())
 
         //遍历cell
 
@@ -38,6 +56,25 @@ export default class SheetReader {
         this.typeMap.clear();
         this.desMap.clear();
         this.fieldMap.clear();
+    }
+
+    private isBool(typeName: string): boolean {
+        return typeName === "bool";
+    }
+
+    private isString(typeName: string): boolean
+    {
+        return this.json_str_type.findIndex((tpe)=>{}) == -1;
+    }
+
+    private isString(typeName: string): boolean
+    {
+        return typeName === "bool";
+    }
+
+    private isString(typeName: string): boolean
+    {
+        return typeName === "bool";
     }
     
     /** 获取工作表的内容范围 */
@@ -92,3 +129,4 @@ interface ContentRange
     lastColumn: number
     lastRow: number
 }
+

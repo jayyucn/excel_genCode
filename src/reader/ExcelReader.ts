@@ -15,6 +15,11 @@ export default class ExcelReader {
         for(let sheetName of workbook.SheetNames) {
             if(sheetName.startsWith('_'))
                 continue;
+            if(!this.isSheetNameCorrect(sheetName)){
+                Logger.Error(`${filePath}: ${sheetName}页签名错误`);
+                return;
+            }
+            sheetName = this.correctSheetNameCase(sheetName);
             let workSheet = workbook.Sheets[sheetName];
             Object.defineProperty(workSheet,'sheetName',{
                 value: sheetName,
@@ -54,11 +59,16 @@ export default class ExcelReader {
     }
 
 
+
     private static isSheetNameCorrect(sheetName: string): boolean {
         let reg = /([A-Z][a-z]+)+/g
         if(sheetName.match(reg))
             return true
         return false
+    }
+
+    private static correctSheetNameCase(sheetName: string) {
+        return sheetName.substr(0,1).toUpperCase() + sheetName.substring(1);
     }
 
     private getCellValue(row: number, column: number) {

@@ -2,20 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExportSheet = void 0;
 class Sheet {
-    constructor() {
-        this.id = 0;
+    constructor(workSheet) {
         this.sheetName = "";
-    }
-    static Create(workSheet, sheetName) {
-        let sheet = new Sheet();
-        sheet.sheetName = sheetName;
-        workSheet["!ref"];
-        Object.assign(sheet, workSheet);
-        sheet._init();
-        return sheet;
-    }
-    _init() {
-        let ref = this['!ref'];
+        this.rowCount = 0;
+        this.columnCount = 0;
+        this.sheetName = workSheet['sheetName'];
     }
 }
 exports.default = Sheet;

@@ -25,26 +25,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const XLSX = __importStar(require("xlsx"));
 const Sheet_1 = require("../data/Sheet");
 const Logger_1 = __importDefault(require("../Logger"));
-const Path_1 = __importDefault(require("../Path"));
+const SheetReader_1 = __importDefault(require("./SheetReader"));
 class ExcelReader {
     static readExcel(filePath) {
         let workbook = XLSX.readFile(filePath);
         for (let sheetName of workbook.SheetNames) {
             if (sheetName.startsWith('_'))
                 continue;
-            let workSheet = workbook.Sheets[sheetName];
-            let range = this.handleRef(workSheet["!ref"]);
-            for (let row = range.firstRow; row <= range.lastColumn; row++) {
-                if (row == 1) {
-                }
+            if (!this.isSheetNameCorrect(sheetName)) {
+                Logger_1.default.Error(`${filePath}: ${sheetName}页签名错误`);
+                return;
             }
-            let str = JSON.stringify(workSheet);
-            console.log('=================', str);
-            Path_1.default.WriteJson('./bin/test.json', str);
+            sheetName = this.correctSheetNameCase(sheetName);
+            let workSheet = workbook.Sheets[sheetName];
+            Object.defineProperty(workSheet, 'sheetName', {
+                value: sheetName,
+                writable: false
+            });
+            SheetReader_1.default.Read(workSheet);
+            // this.workSheetMap.set(sheetName, workSheet);
+            // workSheet
+            // let range = this.handleRef(workSheet["!ref"]);
+            // for(let row = range.firstRow; row <= range.lastColumn; row++) {
+            //     if(row == 1){
+            //     }
+            // }
+            // let str = JSON.stringify(workSheet)
+            // console.log('=================',str);
+            // Path.WriteJson('./bin/test.json', str)
         }
         return [];
-    }
-    getWorkSheet() {
     }
     static readExportExcel(filePath) {
         let workbook = XLSX.readFile(filePath);
@@ -64,6 +74,9 @@ class ExcelReader {
         if (sheetName.match(reg))
             return true;
         return false;
+    }
+    static correctSheetNameCase(sheetName) {
+        return sheetName.substr(0, 1).toUpperCase() + sheetName.substring(1);
     }
     getCellValue(row, column) {
     }
@@ -101,3 +114,4 @@ class ExcelReader {
     }
 }
 exports.default = ExcelReader;
+ExcelReader.workSheetMap = new Map();
