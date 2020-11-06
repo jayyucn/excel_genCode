@@ -23,6 +23,9 @@ export default class Path
 
     public static ReaddirSync(url: string)
     {
+        if(!url.endsWith("/")) {
+            url += "/";
+        }
         let list: string[] = [];
         let itemList = readdirSync(url);
         for(let item of itemList)
@@ -31,7 +34,9 @@ export default class Path
             let stat = statSync(itemPath);
             if(stat && stat.isFile())
             {
-                list.push(itemPath);
+                if(item.indexOf('.xls') != -1 && !item.startsWith('~')){
+                    list.push(itemPath);
+                }
             }
             else if(stat && stat.isDirectory())
             {

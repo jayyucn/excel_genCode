@@ -1,5 +1,4 @@
 import Cmd, {EnumCmd} from './Cmd';
-import * as colors from 'colors';
 export enum LogLevel
 {
     Debug = 0,
@@ -28,7 +27,7 @@ export default class Logger
         {
             return;
         }
-        console.log("test message".red);
+        console.log(args);
         // console.log.apply(this,args);
     }
 
@@ -43,8 +42,8 @@ export default class Logger
 
     public static Error(...args)
     {
-        console.log.apply(this,args);
-        Cmd.runCmd(EnumCmd.Pause);
+        console.error.apply(this,args);
+        // Cmd.runCmd(EnumCmd.Pause);
     }
 
     public static SetLogLevel(level: LogLevel)

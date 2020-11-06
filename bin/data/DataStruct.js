@@ -1,5 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Column {
+class DataStruct {
 }
-exports.default = Column;
+exports.default = DataStruct;

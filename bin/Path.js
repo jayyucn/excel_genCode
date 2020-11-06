@@ -35,13 +35,18 @@ class Path {
         Fse.writeJsonSync(path, jsonString);
     }
     static ReaddirSync(url) {
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
         let list = [];
         let itemList = fs_1.readdirSync(url);
         for (let item of itemList) {
             let itemPath = url + '/' + item;
             let stat = fs_1.statSync(itemPath);
             if (stat && stat.isFile()) {
-                list.push(itemPath);
+                if (item.indexOf('.xls') != -1 && !item.startsWith('~')) {
+                    list.push(itemPath);
+                }
             }
             else if (stat && stat.isDirectory()) {
                 let newList = Path.ReaddirSync(itemPath);

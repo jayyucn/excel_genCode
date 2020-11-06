@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnumCmd = void 0;
-const node_cmd_1 = __importDefault(require("node-cmd"));
-const child_process_1 = __importDefault(require("child_process"));
-const Logger_1 = __importDefault(require("./Logger"));
+const node_cmd_1 = require("node-cmd");
+const child_process_1 = require("child_process");
+const Logger_1 = require("./Logger");
 let exec = child_process_1.default.exec;
 var EnumCmd;
 (function (EnumCmd) {

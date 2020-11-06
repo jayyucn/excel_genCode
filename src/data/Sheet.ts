@@ -1,12 +1,10 @@
 import XLSX from "xlsx"
-import Row from "./Row";
 export default class Sheet
 {
     sheetName: string = "";
     rowCount: number = 0;
     columnCount: number = 0;
     
-    rows: Row[];
     
     constructor(workSheet: XLSX.WorkSheet) {
         this.sheetName = workSheet['sheetName'];
@@ -15,7 +13,8 @@ export default class Sheet
 
 }
 
-export class ExportSheet extends Sheet {
+export class ExportSheet implements XLSX.WorkSheet {
+    sheetName: string = "";
     public struct: string = "";
     public structCN: string = "";
     public field: string =  "";

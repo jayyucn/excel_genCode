@@ -10,9 +10,9 @@ class Sheet {
     }
 }
 exports.default = Sheet;
-class ExportSheet extends Sheet {
+class ExportSheet {
     constructor() {
-        super(...arguments);
+        this.sheetName = "";
         this.struct = "";
         this.structCN = "";
         this.field = "";

@@ -2,10 +2,10 @@
   "name": "excel_gencode",
   "version": "1.0.0",
   "description": "",
-  "main": "./bin/test.js",
+  "main": "./bin/index.js",
   "scripts": {
     "tsc": "tsc",
-    "run": "node ./bin/test.js",
+    "run": "node ./bin/index.js",
     "runTest": "node ./test.js"
   },
   "repository": {

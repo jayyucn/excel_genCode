@@ -23,26 +23,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const XLSX = __importStar(require("xlsx"));
-const Sheet_1 = require("../data/Sheet");
 const Logger_1 = __importDefault(require("../Logger"));
+const Path_1 = __importDefault(require("../Path"));
 const SheetReader_1 = __importDefault(require("./SheetReader"));
+const DataManager_1 = __importDefault(require("../DataManager"));
 class ExcelReader {
     static readExcel(filePath) {
+        Logger_1.default.Info(`reading...${filePath}`);
         let workbook = XLSX.readFile(filePath);
         for (let sheetName of workbook.SheetNames) {
             if (sheetName.startsWith('_'))
                 continue;
             if (!this.isSheetNameCorrect(sheetName)) {
                 Logger_1.default.Error(`${filePath}: ${sheetName}页签名错误`);
-                return;
             }
-            sheetName = this.correctSheetNameCase(sheetName);
+            let tmpSheet = DataManager_1.default.GetSheet(sheetName);
+            if (tmpSheet) {
+                Logger_1.default.Error(`${filePath}: ${sheetName}页签名重复\n ${tmpSheet.filePath}: ${tmpSheet.sheetName}`);
+            }
             let workSheet = workbook.Sheets[sheetName];
+            sheetName = this.correctSheetNameCase(sheetName);
             Object.defineProperty(workSheet, 'sheetName', {
                 value: sheetName,
                 writable: false
             });
-            SheetReader_1.default.Read(workSheet);
+            Object.defineProperty(workSheet, 'filePath', {
+                value: filePath,
+                writable: false
+            });
+            let sheetData = SheetReader_1.default.Read(workSheet);
+            DataManager_1.default.AddSheet(sheetData);
             // this.workSheetMap.set(sheetName, workSheet);
             // workSheet
             // let range = this.handleRef(workSheet["!ref"]);
@@ -57,20 +67,33 @@ class ExcelReader {
         return [];
     }
     static readExportExcel(filePath) {
+        if (!Path_1.default.IsFile(filePath)) {
+            Logger_1.default.Error(`ExportSetting.xlsx 路径错误：${filePath}`);
+            return null;
+        }
         let workbook = XLSX.readFile(filePath);
-        if (!workbook)
+        if (!workbook) {
             Logger_1.default.Error(`${__dirname}:: ${__filename}: file ${filePath} not exist!!!`);
+            return null;
+        }
         if (workbook && workbook.SheetNames && workbook.SheetNames.length > 0) {
             let sheetName = workbook.SheetNames[0];
             let workSheet = workbook.Sheets[sheetName];
-            let sheet = Sheet_1.ExportSheet.Create(workSheet, sheetName);
-            return sheet;
+            Object.defineProperty(workSheet, 'sheetName', {
+                value: sheetName,
+                writable: false
+            });
+            Object.defineProperty(workSheet, 'filePath', {
+                value: filePath,
+                writable: false
+            });
+            DataManager_1.default.setExportSheet(SheetReader_1.default.Read(workSheet));
         }
         Logger_1.default.Error(`${__dirname}:: ${__filename}: Read ${filePath} failed!!!`);
         return null;
     }
     static isSheetNameCorrect(sheetName) {
-        let reg = /([A-Z][a-z]+)+/g;
+        let reg = /[a-zA-Z]*/g;
         if (sheetName.match(reg))
             return true;
         return false;

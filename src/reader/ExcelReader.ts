@@ -3,6 +3,7 @@ import Sheet,{ExportSheet} from '../data/Sheet';
 import Logger from '../Logger';
 import Path from '../Path';
 import SheetReader from './SheetReader';
+import DataManager from '../DataManager';
 import WorkBook = XLSX.WorkBook;
 import WorkSheet = XLSX.WorkSheet;
 
@@ -11,21 +12,30 @@ export default class ExcelReader {
     public static workSheetMap: Map<string, WorkSheet> = new Map<string, WorkSheet>();
 
     public static readExcel(filePath: string): Sheet[] {
+        Logger.Info(`reading...${filePath}`);
         let workbook = XLSX.readFile(filePath);
         for(let sheetName of workbook.SheetNames) {
             if(sheetName.startsWith('_'))
                 continue;
             if(!this.isSheetNameCorrect(sheetName)){
                 Logger.Error(`${filePath}: ${sheetName}页签名错误`);
-                return;
             }
-            sheetName = this.correctSheetNameCase(sheetName);
+            let tmpSheet = DataManager.GetSheet(sheetName);
+            if(tmpSheet) {
+                Logger.Error(`${filePath}: ${sheetName}页签名重复\n ${tmpSheet.filePath}: ${tmpSheet.sheetName}`);
+            }
             let workSheet = workbook.Sheets[sheetName];
+            sheetName = this.correctSheetNameCase(sheetName);
             Object.defineProperty(workSheet,'sheetName',{
                 value: sheetName,
                 writable: false
             })
-            SheetReader.Read(workSheet);
+            Object.defineProperty(workSheet, 'filePath', {
+                value: filePath,
+                writable: false
+            })
+            let sheetData = SheetReader.Read(workSheet);
+            DataManager.AddSheet(sheetData);
             // this.workSheetMap.set(sheetName, workSheet);
             // workSheet
             // let range = this.handleRef(workSheet["!ref"]);
@@ -44,24 +54,34 @@ export default class ExcelReader {
 
 
     static readExportExcel(filePath: string) {
+        if(!Path.IsFile(filePath)) {
+            Logger.Error(`ExportSetting.xlsx 路径错误：${filePath}`);
+            return null;
+        }
         let workbook = XLSX.readFile(filePath);
-        if(!workbook)
+        if(!workbook) {
             Logger.Error(`${__dirname}:: ${__filename}: file ${filePath} not exist!!!`);
-
+            return null;
+        }
         if(workbook && workbook.SheetNames && workbook.SheetNames.length > 0) {
             let sheetName = workbook.SheetNames[0];
             let workSheet = workbook.Sheets[sheetName];
-            let sheet: ExportSheet = ExportSheet.Create(workSheet, sheetName);
-            return sheet;
+            Object.defineProperty(workSheet,'sheetName',{
+                value: sheetName,
+                writable: false
+            })
+            Object.defineProperty(workSheet,'filePath',{
+                value: filePath,
+                writable: false
+            })
+            DataManager.setExportSheet(SheetReader.Read(workSheet));
         }
         Logger.Error(`${__dirname}:: ${__filename}: Read ${filePath} failed!!!`);
         return null;
     }
 
-
-
     private static isSheetNameCorrect(sheetName: string): boolean {
-        let reg = /([A-Z][a-z]+)+/g
+        let reg = /[a-zA-Z]*/g
         if(sheetName.match(reg))
             return true
         return false
